@@ -1,0 +1,23 @@
+{
+  "name": "hatmelia-server",
+  "version": "1.0.0",
+  "description": "hatmelia server logic",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "socket.io": "^2.0.2"
+  },
+  "devDependencies": {
+    "mocha": "^3.4.2",
+    "should": "^11.2.1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/deckbsd/hatmelia-node/issues"
+  },
+  "homepage": "https://github.com/deckbsd/hatmelia-node#readme"
+}
