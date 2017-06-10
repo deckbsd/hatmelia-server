@@ -2,6 +2,7 @@
   "name": "hatmelia-server",
   "version": "1.0.0",
   "description": "hatmelia server logic",
+  "author": "Julien flawinne",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -17,7 +18,7 @@
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/deckbsd/hatmelia-node/issues"
+    "url": "https://github.com/deckbsd/hatmelia-server/issues"
   },
-  "homepage": "https://github.com/deckbsd/hatmelia-node#readme"
+  "homepage": "https://github.com/deckbsd/hatmelia-server#readme"
 }
