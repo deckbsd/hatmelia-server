@@ -1,12 +1,17 @@
 'use strict'
 let express = require('express');
-let parser = require('./lib/parser')
+let parser = require('./lib/crawler')
 var app = express();
 var port = process.env.PORT || 3000;
 var router = express.Router();
 
 var checkLinksController = (req, res) =>
 {
+    if(req.query.id === undefined || req.query.url === undefined){
+        res.status(400);
+        res.send('bad parameters');
+    }
+
     res.status(200);
     res.send();  
 };
