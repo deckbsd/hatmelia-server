@@ -1,9 +1,12 @@
 'use strict'
 let express = require('express');
-let parser = require('./lib/crawler')
-var app = express();
+let app = express();
+let parser = require('./lib/crawler');
+let server = require('http').Server(app);
+let io = require('socket.io')(server);
 var port = process.env.PORT || 3000;
 var router = express.Router();
+io.origins('*:*');
 
 var checkLinksController = (req, res) =>
 {
@@ -22,6 +25,6 @@ app.get('/', (req, res) => {
     res.send('hatmelia api')
 });
 
-app.listen(port, _=>{
+server.listen(port, _=>{
     console.log('listening on port : ' + port);
 });
