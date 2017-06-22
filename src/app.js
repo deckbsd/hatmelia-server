@@ -1,12 +1,13 @@
 'use strict'
+let config = require('./config.json')
 let express = require('express');
 let app = express();
 let parser = require('./lib/crawler');
 let server = require('http').Server(app);
 let io = require('socket.io')(server);
-var port = process.env.PORT || 3000;
+var port = process.env.PORT || config.server.port;
 var router = express.Router();
-io.origins('*:*');
+io.origins(config.cors);
 
 var checkLinksController = (req, res) =>
 {
