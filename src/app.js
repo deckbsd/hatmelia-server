@@ -2,26 +2,14 @@
 let config = require('./config.json')
 let express = require('express');
 let app = express();
-let parser = require('./lib/crawler');
+let htmlServiceModule = require('./lib/htmlService');
+let apiRouter = require('./routes/apiRoutes')();
 let server = require('http').Server(app);
 let io = require('socket.io')(server);
-var port = process.env.PORT || config.server.port;
-var router = express.Router();
 io.origins(config.cors);
+var port = process.env.PORT || config.server.port;
 
-var checkLinksController = (req, res) =>
-{
-    if(req.query.id === undefined || req.query.url === undefined){
-        res.status(400);
-        res.send('bad parameters');
-    }
-
-    res.status(200);
-    res.send();  
-};
-
-router.route('/checklinks').get(checkLinksController);
-app.use('/api/v1', router);
+app.use('/api/v1', apiRouter);
 app.get('/', (req, res) => {
     res.send('hatmelia api')
 });
