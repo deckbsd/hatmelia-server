@@ -2,7 +2,6 @@
 let config = require('./config.json')
 let express = require('express');
 let app = express();
-let htmlServiceModule = require('./lib/htmlService');
 let apiRouter = require('./routes/apiRoutes')();
 let server = require('http').Server(app);
 let io = require('socket.io')(server);
