@@ -1,6 +1,10 @@
 {
     "server":{
-        "port": 3000
+        "port": 3000,
+        "maximumClients": 5
     },
-    "cors": "*:*"
+    "cors": "*:*",
+    "ionamespaces":{
+        "links": "/links-analyzer"
+    }
 }

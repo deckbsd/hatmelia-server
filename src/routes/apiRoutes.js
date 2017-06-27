@@ -1,6 +1,7 @@
 'use strict'
 let express = require('express');
-let htmlController = require('../controllers/htmlController')();
+let HtmlController = require('../controllers/htmlController');
+let HtmlService = require('../lib/htmlService/htmlService');
 
 var routes = _=>{
     var router = express.Router();
@@ -12,7 +13,9 @@ var routes = _=>{
 
         next();
     });
-    router.route('/checklinks').get(htmlController.get);
+    router.route('/checklinks').get((req, res) => {
+        new HtmlController(new HtmlService()).get(req, res);
+    });
     return router;
 };
 
