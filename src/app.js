@@ -4,25 +4,34 @@ let HtmlService = require('./lib/services/html-service');
 let IoState = require('./lib/io-state/io-state');
 let server = require('http').createServer();
 let io = require('socket.io')(server);
+let port = process.env.PORT || config.server.port;
+let clientCounter = 0;
 io.origins(config.cors);
-var port = process.env.PORT || config.server.port;
 
 let linksNamespace = io.of(config.ionamespaces.links);
 linksNamespace.use(function(socket, next){
-    if(1 <= config.server.maximumClients){
+    if(clientCounter < config.server.maximumClients){
         next();
     }
-    socket.close();
+    else{
+        socket.disconnect(true);
+    }  
 });
 linksNamespace.on('connection', function(socket) {
     let state = new IoState();
+    console.log('client ' + socket.id + ' connected');
+    clientCounter++;
     socket.on('check-for-dead', (query) => {
         if(state.maxRequestReached() === false){
-            new HtmlService(linksNamespace).checkDeadLinks(1, "http://test.com", function(){
+            new HtmlService(socket).checkDeadLinks("http://test.com", function(){
                 state.requestFinished();
             });
             state.runRequest();
         }
+    });
+    socket.on('disconnect', () => {
+        console.log('client ' + socket.id + ' disconnected');
+        clientCounter--;
     });
 });
 
