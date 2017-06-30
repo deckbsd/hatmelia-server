@@ -1,10 +1,10 @@
 'use strict'
-let config = require('./config.json');
-let ioNamespaces = require('./ionamespaces');
-let server = require('http').createServer();
-let io = require('socket.io')(server);
-let port = process.env.PORT || config.server.port;
-let clientCounter = 0;
+const config = require('./config.json');
+const ioNamespaces = require('./ionamespaces');
+const server = require('http').createServer();
+const io = require('socket.io')(server);
+const port = process.env.PORT || config.server.port;
+const clientCounter = 0;
 io.origins(config.cors);
 
 ioNamespaces.init(io);

@@ -1,9 +1,22 @@
 'use strict'
-let HtmlService = require('../lib/services/htmlService');
+const URL = require('url');
+const HtmlService = require('../lib/services/htmlService');
 
 let clientCounter = 0;
-var LinksNamespace = function(){
-    var that = this;
+function LinksNamespace(){
+    this.checkIfValidParameter = function(query){
+        if(!query || typeof(query) != 'string'){
+            throw 'invalid-parameter';
+        }
+    }.bind(this);
+
+    this.buildValidUrl = function(url){
+        var validUrl = URL.parse(url);
+        if(validUrl.protocol !== 'http:' && validUrl.protocol !== 'https:'){
+            throw 'protocol-not-supported';
+        }
+        return validUrl;
+    }.bind(this);
 };
 
 LinksNamespace.prototype.init = function(io, config, RequestLimitation)
@@ -19,18 +32,24 @@ LinksNamespace.prototype.init = function(io, config, RequestLimitation)
         }  
     });
     linksNamespace.on('connection', function(socket) {
-        let limitation = new RequestLimitation(config.ionamespaces.links.maxRequest);
+        const limitation = new RequestLimitation(config.ionamespaces.links.maxRequest);
         console.log('client ' + socket.id + ' connected');
         clientCounter++;
         socket.on('check-for-dead', (query) => {
-            if(limitation.requestAllowed() === true){
+            try{
+                if(limitation.requestAllowed() === false){
+                    throw 'max-request';
+                }
+                
+                that.checkIfValidParameter(query);
+                let validUrl = that.buildValidUrl(query);
                 limitation.newRequest();
-                new HtmlService(socket).checkDeadLinks(query, function(){
+                new HtmlService(socket).checkDeadLinks(validUrl, function(){
                     limitation.requestFinished();
                 });
-            }
-            else {
-                socket.emit('server-error', 'max-request');
+            }catch(err)
+            {
+                socket.emit('server-error', err);
             }
         });
         socket.on('disconnect', () => {

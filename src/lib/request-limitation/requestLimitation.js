@@ -1,5 +1,5 @@
 'use strict'
-var RequestLimitation = function(limit){
+function RequestLimitation(limit){
     var that = this;
     that.limit = limit;
     that.requestsRunning = 0;

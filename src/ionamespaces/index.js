@@ -1,7 +1,7 @@
 'use strict'
-let config = require('../config.json');
-let RequestLimitation = require('../lib/request-limitation/requestLimitation');
-let LinksNameSpace = new (require('./linksNamespace'));
+const config = require('../config.json');
+const RequestLimitation = require('../lib/request-limitation/requestLimitation');
+const LinksNameSpace = new (require('./linksNamespace'));
 
 exports.init = (io) => {
     LinksNameSpace.init(io, config, RequestLimitation);

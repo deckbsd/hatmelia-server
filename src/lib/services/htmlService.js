@@ -1,5 +1,5 @@
 'use strict'
-var HtmlService = function(socket){
+function HtmlService(socket){
     var that = this;
     that.socket = socket;
 };
