@@ -5,6 +5,9 @@
     },
     "cors": "*:*",
     "ionamespaces":{
-        "links": "/links-analyzer"
+        "links": {
+            "name": "/links-analyzer",
+            "maxRequest": 1
+        }
     }
 }
