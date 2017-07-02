@@ -10,11 +10,12 @@ function LinksNamespace(){
         }
     }.bind(this);
 
-    this.buildValidUrl = function(url){
-        var validUrl = URL.parse(url);
+    this.createUrl = function(url){
+        let validUrl = URL.parse(url);
         if(validUrl.protocol !== 'http:' && validUrl.protocol !== 'https:'){
             throw 'protocol-not-supported';
         }
+
         return validUrl;
     }.bind(this);
 };
@@ -40,11 +41,11 @@ LinksNamespace.prototype.init = function(io, config, RequestLimitation)
                 if(limitation.requestAllowed() === false){
                     throw 'max-request';
                 }
-                
+
                 that.checkIfValidParameter(query);
-                let validUrl = that.buildValidUrl(query);
+                var url = that.createUrl(query);
                 limitation.newRequest();
-                new HtmlService(socket).checkDeadLinks(validUrl, function(){
+                new HtmlService(socket).deadLinksRequest(url, _=>{
                     limitation.requestFinished();
                 });
             }catch(err)
