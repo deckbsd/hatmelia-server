@@ -26,7 +26,7 @@ function RequesterService(){
     }.bind(this);
 }
 
-RequesterService.prototype.getUrl = function(url, onGetFinished)
+RequesterService.prototype.get = function(url, onGetFinished)
 {
     let that = this;
     that.on('getFinished', (body) => {
