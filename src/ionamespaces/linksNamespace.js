@@ -1,6 +1,8 @@
 'use strict'
 const URL = require('url');
 const HtmlService = require('../lib/services/htmlService');
+const RequesterService = require('../lib/services/requesterService');
+const ProxiedRequesterService = require('../lib/services/proxiedRequesterService');
 
 let clientCounter = 0;
 function LinksNamespace(){
@@ -41,12 +43,16 @@ LinksNamespace.prototype.init = function(io, config, RequestLimitation)
                 if(limitation.requestAllowed() === false){
                     throw 'max-request';
                 }
-
+                
                 that.checkIfValidParameter(query);
                 var url = that.createUrl(query);
                 limitation.newRequest();
-                new HtmlService(socket).deadLinksRequest(url, _=>{
+                let requester = that.createRequester(config);
+                let hmtlService = new HtmlService(socket, requester);
+                hmtlService.deadLinksRequest(url, _=>{
                     limitation.requestFinished();
+                    requester = null;
+                    hmtlService = null;
                 });
             }catch(err)
             {
@@ -58,6 +64,14 @@ LinksNamespace.prototype.init = function(io, config, RequestLimitation)
             clientCounter--;
         });
     });
+}
+
+LinksNamespace.prototype.createRequester = function(config) {
+    if(config.proxy)
+    {
+        return new ProxiedRequesterService(config.proxy_addr);
+    }
+    return new RequesterService();
 }
 
 module.exports = LinksNamespace;

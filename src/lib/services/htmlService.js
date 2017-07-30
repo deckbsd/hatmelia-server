@@ -1,13 +1,12 @@
 'use strict'
 const EventEmitter = require('events').EventEmitter;
-const RequesterService = require('./requesterService');
 const cheerio = require('cheerio');
 const util = require('util');
 
-function HtmlService(socket){
+function HtmlService(socket, requesterService){
     var that = this;
     that.socket = socket;
-    that.requesterService = new RequesterService();
+    that.requesterService = requesterService;
     that.urlsToProcess = [];
     that.urlsProcessed = [];
 };

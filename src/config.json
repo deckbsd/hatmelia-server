@@ -4,6 +4,8 @@
         "maximumClients": 5
     },
     "cors": "*:*",
+    "proxy": false,
+    "proxy_addr": null,
     "ionamespaces":{
         "links": {
             "name": "/links-analyzer",
