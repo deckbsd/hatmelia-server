@@ -22,7 +22,8 @@ function RequesterService(){
                 'Accept-Encoding': this.selectAcceptEncodingHeader(url.protocol)
             },
             gzip: true,
-            deflate: true
+            deflate: true,
+            jar: true
         }
     }.bind(this);
 }

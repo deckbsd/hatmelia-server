@@ -71,6 +71,7 @@ LinksNamespace.prototype.createRequester = function(config) {
     {
         return new ProxiedRequesterService(config.proxy_addr);
     }
+    
     return new RequesterService();
 }
 
