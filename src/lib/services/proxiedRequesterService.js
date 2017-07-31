@@ -1,5 +1,6 @@
 'use strict'
 const RequesterService = require('./requesterService');
+const request = require('request');
 const util = require('util');
 
 function ProxiedRequesterService(proxy) {

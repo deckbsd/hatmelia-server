@@ -60,8 +60,9 @@ LinksNamespace.prototype.init = function(io, config, RequestLimitation)
             }
         });
         socket.on('disconnect', () => {
-            console.log('client ' + socket.id + ' disconnected');
+            limitation = null;
             clientCounter--;
+            console.log('client ' + socket.id + ' disconnected');
         });
     });
 }
@@ -71,7 +72,7 @@ LinksNamespace.prototype.createRequester = function(config) {
     {
         return new ProxiedRequesterService(config.proxy_addr);
     }
-    
+
     return new RequesterService();
 }
 
