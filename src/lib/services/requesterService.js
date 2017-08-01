@@ -35,33 +35,43 @@ RequesterService.prototype.createRequest = function()
 
 RequesterService.prototype.get = function(url, onGetFinished)
 {
-    let self = this;
-    self.on('getFinished', (body) => {
+    const _self = this;
+    _self.once('getFinished', (body) => {
         onGetFinished(body);
-    });
-    self.req.get(self.buildRequest(url), (error, response, body) => {
+    })
+
+    _self.req.get(_self.buildRequest(url.url), (error, response, body) => {
         let html = null;
-        if (!error && response.statusCode == 200){
+        let status = null;
+        let failed = false;
+
+        if (!error && response.statusCode === 200 && (response.headers['content-type'].includes('text/html') || response.headers['content-type'].includes('application/xhtml+xml'))){
             html = body;
+        } else if(!error && response.statusCode != 200) {
+            status = response.statusCode;
+            failed = true;
+        }else if(error) {
+            failed = true;
         }
 
-        self.emit('getFinished', html);
+        _self.emit('getFinished', { html : html, status : status, error : error, failed : failed, url : url } );
     })
 }
 
 RequesterService.prototype.getValidUrl = function(url, onGotValidUrl){
-    let self = this;
-    self.on('gotValidUrl', (validUrl) => {
+    const _self = this;
+    _self.once('gotValidUrl', (validUrl) => {
         onGotValidUrl(validUrl);
-    });  
-    self.req.get(self.buildRequest(url), (error, response, body) => {
+    })
+
+    _self.req.get(_self.buildRequest(url), (error, response, body) => {
         let validUrl = null;
         if (!error && response.statusCode == 200){
             console.log(response);
             validUrl = response.request.uri;
         }
         
-        self.emit('gotValidUrl', validUrl);
+        _self.emit('gotValidUrl', validUrl);
     })
 }
 
