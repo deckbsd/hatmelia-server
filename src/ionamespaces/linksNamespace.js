@@ -35,7 +35,7 @@ LinksNamespace.prototype.init = function(io, config, RequestLimitation)
         }  
     });
     linksNamespace.on('connection', function(socket) {
-        const limitation = new RequestLimitation(config.ionamespaces.links.maxRequest);
+        let limitation = new RequestLimitation(config.ionamespaces.links.maxRequest);
         console.log('client ' + socket.id + ' connected');
         clientCounter++;
         socket.on('check-for-dead', (query) => {
