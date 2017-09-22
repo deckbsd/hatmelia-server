@@ -3,6 +3,7 @@ const EventEmitter = require('events').EventEmitter;
 const StopWatch = new (require('../stopwatch/stopwatch'));
 const SortedList = require('sortedlist')
 const cheerio = require('cheerio');
+const Events = require('events')
 const util = require('util');
 const URL = require('url');
 
@@ -18,15 +19,15 @@ function HtmlService(socket, requesterService){
 
 HtmlService.prototype.deadLinksRequest = async function(url, onFinished) {
     const _self = this;
-    _self.once('requestFinished', onFinished);
+    _self.once(Events.REQUEST_FINISHED, onFinished);
     _self.requesterService.getValidUrl(url, _self.start.bind(this));
 };
 
 HtmlService.prototype.start = function(validUrl){
     const _self = this;
     if(!validUrl){
-        _self.socket.emit('server-error', 'website-not-found');
-        _self.emit('requestFinished');
+        _self.socket.emit(Events.SERVER_ERROR, 'website-not-found');
+        _self.emit(Events.REQUEST_FINISHED);
     }else{
         _self.rootUrl = validUrl;
         _self.processedUrls.insertOne(validUrl.href);
@@ -39,7 +40,7 @@ HtmlService.prototype.pushLinks = function(result){
     const _self = this;
 
     _self.checkedLinksTotal++;
-    _self.socket.emit('linkChecked', _self.checkedLinksTotal);
+    _self.socket.emit(Events.LINK_CHECKED, _self.checkedLinksTotal);
     if(!result.failed) {
         if(result.html !== null && _self.isSameDomain(_self.rootUrl.host, result.url.url.host)) {
             let $ = cheerio.load(result.html);
@@ -49,8 +50,9 @@ HtmlService.prototype.pushLinks = function(result){
         }
     }
     else {
-        _self.socket.emit('deadlinkDetected', { from : result.url.from.href, url : result.url.url.href, reason : result.status || result.error});
-        console.log("from : " + result.url.from.href + " url : " + result.url.url.href + " reason : " + result.status || result.error)
+        const reason = result.status !== null ? result.status : result.error
+        _self.socket.emit(Events.DEAD_LINK_DETECTED, { from : result.url.from.href, url : result.url.url.href, reason : reason})
+        console.log("from : " + result.url.from.href + " url : " + result.url.url.href + " reason : " + reason)
     }
 
     if(_self.urlsToProcess.length > 0){
@@ -58,9 +60,9 @@ HtmlService.prototype.pushLinks = function(result){
         _self.requesterService.get(urlToNavigate, _self.pushLinks.bind(this)) 
     } else {
         StopWatch.stop();
-        _self.socket.emit('requestFinished', StopWatch.elapsedMilliseconds());
+        _self.socket.emit(Events.REQUEST_FINISHED, StopWatch.elapsedMilliseconds());
         console.log(StopWatch.logInHMS());
-        _self.emit('requestFinished');
+        _self.emit(Events.REQUEST_FINISHED);
     }
 }
 
