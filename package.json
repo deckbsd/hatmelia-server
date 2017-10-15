@@ -8,12 +8,14 @@
     "start": "node ./src/app.js"
   },
   "dependencies": {
+    "async": "^2.5.0",
     "cheerio": "^1.0.0-rc.2",
-    "express": "^4.15.3",
-    "request": "^2.81.0",
+    "express": "^4.16.1",
+    "request": "^2.83.0",
+    "request-promise-native": "^1.0.5",
     "socket.io": "^2.0.3",
-    "uws": "^8.14.0",
-    "sortedlist": "^0.3.1"
+    "sortedlist": "^0.3.1",
+    "uws": "^8.14.1"
   },
   "devDependencies": {
     "mocha": "^3.4.2",

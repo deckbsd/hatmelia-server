@@ -11,5 +11,8 @@
             "name": "/links-analyzer",
             "maxRequest": 1
         }
+    },
+    "html_service": {
+        "concurrency": 3
     }
 }
