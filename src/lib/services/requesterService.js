@@ -2,6 +2,7 @@
 const EventEmitter = require('events').EventEmitter
 const URL = require('url')
 const request = require('request-promise-native')
+const errors = require('request-promise-native/errors')
 const util = require('util')
 
 function RequesterService(){
@@ -22,7 +23,8 @@ function RequesterService(){
             },
             gzip: true,
             deflate: true,
-            jar: true
+            jar: true,
+            resolveWithFullResponse: true
         }
     }.bind(this)
 }
@@ -37,24 +39,19 @@ RequesterService.prototype.get = async function(url)
     const _self = this
     let html = null
     let status = null
-    let catched_error = null
     let failed = false
     try {
         const response = await _self.req.get(_self.buildRequest(url.url))  
         if (response.statusCode === 200 && (response.headers['content-type'].includes('text/html') || response.headers['content-type'].includes('application/xhtml+xml'))){
-            html = body
-        } else if(response.statusCode != 200) {
-            status = response.statusCode
-            failed = true
+            html = response.body
         }
         
-        return { html : html, status : status, error : catched_error, failed : failed, url : url }
+        return { html : html, status : status, error : null, failed : failed, url : url }
     }
     catch(error)
     {
         failed = true
-        catched_error = error 
-        return { html : html, status : status, error : catched_error, failed : failed, url : url }
+        return { html : html, status : error.statusCode, error : error.cause, failed : failed, url : url }
     }
 }
 
@@ -63,7 +60,7 @@ RequesterService.prototype.getValidUrl = async function(url){
     let validUrl = null
     try {
         const response = await _self.req.get(_self.buildRequest(url))
-        if (!error && response.statusCode == 200){
+        if (response.statusCode == 200){
             console.log(response)
             validUrl = response.request.uri
         }
