@@ -1,21 +1,21 @@
 'use strict'
-function RequestLimitation(limit){
+function RequestLimitation(limit) {
     var that = this
     that.limit = limit
     that.requestsRunning = 0
 }
 
-RequestLimitation.prototype.requestAllowed = function(){
+RequestLimitation.prototype.requestAllowed = function () {
     var that = this
     return that.requestsRunning < that.limit
 }
 
-RequestLimitation.prototype.newRequest = function(){
+RequestLimitation.prototype.newRequest = function () {
     var that = this
     that.requestsRunning++
 }
 
-RequestLimitation.prototype.requestFinished = function(){
+RequestLimitation.prototype.requestFinished = function () {
     var that = this
     that.requestsRunning--
 }

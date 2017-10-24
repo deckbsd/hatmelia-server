@@ -5,16 +5,16 @@ const request = require('request-promise-native')
 const errors = require('request-promise-native/errors')
 const util = require('util')
 
-function RequesterService(){
+function RequesterService() {
     this.req = this.createRequest()
-    this.selectAcceptEncodingHeader = function(protocol){
-        if(protocol === 'https:'){
+    this.selectAcceptEncodingHeader = function (protocol) {
+        if (protocol === 'https:') {
             return 'gzip, deflate, br'
         }
 
         return 'gzip, deflate, br'
     }.bind(this)
-    this.buildRequest = function(url){
+    this.buildRequest = function (url) {
         return {
             url: url.href,
             headers: {
@@ -29,46 +29,42 @@ function RequesterService(){
     }.bind(this)
 }
 
-RequesterService.prototype.createRequest = function()
-{
+RequesterService.prototype.createRequest = function () {
     return request.defaults()
 }
 
-RequesterService.prototype.get = async function(url)
-{
+RequesterService.prototype.get = async function (url) {
     const _self = this
     let html = null
     let status = null
     let failed = false
     try {
-        const response = await _self.req.get(_self.buildRequest(url.url))  
-        if (response.statusCode === 200 && (response.headers['content-type'].includes('text/html') || response.headers['content-type'].includes('application/xhtml+xml'))){
+        const response = await _self.req.get(_self.buildRequest(url.url))
+        if (response.statusCode === 200 && (response.headers['content-type'].includes('text/html') || response.headers['content-type'].includes('application/xhtml+xml'))) {
             html = response.body
         }
-        
-        return { html : html, status : status, error : null, failed : failed, url : url }
+
+        return { html: html, status: status, error: null, failed: failed, url: url }
     }
-    catch(error)
-    {
+    catch (error) {
         failed = true
-        return { html : html, status : error.statusCode, error : error.cause, failed : failed, url : url }
+        return { html: html, status: error.statusCode, error: error.cause, failed: failed, url: url }
     }
 }
 
-RequesterService.prototype.getValidUrl = async function(url){
+RequesterService.prototype.getValidUrl = async function (url) {
     const _self = this
     let validUrl = null
     try {
         const response = await _self.req.get(_self.buildRequest(url))
-        if (response.statusCode == 200){
+        if (response.statusCode == 200) {
             console.log(response)
             validUrl = response.request.uri
         }
 
         return validUrl
     }
-    catch(error)
-    {
+    catch (error) {
         return validUrl
     }
 }
