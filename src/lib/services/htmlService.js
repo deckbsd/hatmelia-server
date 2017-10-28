@@ -12,6 +12,7 @@ const URL = require('url')
 function HtmlService(socket, requesterService) {
     const _self = this
     _self.socket = socket
+    _self.cancelled = false
     _self.requesterService = requesterService
     _self.urlsToProcess = async.queue(_self.processUrl.bind(this), config.html_service.concurrency)
     _self.urlsToProcess.drain = _self.requestFinished.bind(this)
@@ -30,6 +31,10 @@ HtmlService.prototype.requestFinished = function () {
 
 HtmlService.prototype.processUrl = async function (urlToNavigate) {
     const _self = this
+    if (_self.isCancelled()) {
+        return
+    }
+
     const result = await _self.requesterService.get(urlToNavigate)
     _self.pushLinks(result)
 }
@@ -58,6 +63,9 @@ HtmlService.prototype.start = function (validUrl) {
 
 HtmlService.prototype.pushLinks = function (result) {
     const _self = this
+    if (_self.isCancelled()) {
+        return
+    }
 
     _self.checkedLinksTotal++
     _self.socket.emit(serverEvents.LINK_CHECKED, _self.checkedLinksTotal)
@@ -74,6 +82,17 @@ HtmlService.prototype.pushLinks = function (result) {
         _self.socket.emit(serverEvents.DEAD_LINK_DETECTED, { from: result.url.from.href, url: result.url.url.href, reason: reason })
         console.log("from : " + result.url.from.href + " url : " + result.url.url.href + " reason : " + reason)
     }
+}
+
+HtmlService.prototype.cancel = function () {
+    const _self = this
+    _self.cancelled = true
+    _self.urlsToProcess.kill()
+}
+
+HtmlService.prototype.isCancelled = function () {
+    const _self = this
+    return _self.cancelled === true
 }
 
 HtmlService.prototype.buildLink = function (from, path) {

@@ -35,6 +35,7 @@ LinksNamespace.prototype.init = function (io, config, RequestLimitation) {
     })
     linksNamespace.on('connection', function (socket) {
         let limitation = new RequestLimitation(config.ionamespaces.links.maxRequest)
+        let htmlService = null
         console.log('client ' + socket.id + ' connected')
         clientCounter++
         socket.on('check-for-dead', (query) => {
@@ -47,17 +48,19 @@ LinksNamespace.prototype.init = function (io, config, RequestLimitation) {
                 var url = that.createUrl(query)
                 limitation.newRequest()
                 let requester = that.createRequester(config)
-                let hmtlService = new HtmlService(socket, requester)
-                hmtlService.deadLinksRequest(url, _ => {
+                htmlService = new HtmlService(socket, requester)
+                htmlService.deadLinksRequest(url, _ => {
                     limitation.requestFinished()
                     requester = null
-                    hmtlService = null
+                    htmlService = null
                 })
             } catch (err) {
                 socket.emit('server-error', err)
             }
         })
         socket.on('disconnect', () => {
+            htmlService.cancel()
+            htmlService = null
             limitation = null
             clientCounter--
             console.log('client ' + socket.id + ' disconnected')
