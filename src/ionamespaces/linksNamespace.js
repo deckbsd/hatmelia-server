@@ -23,7 +23,7 @@ function LinksNamespace() {
 }
 
 LinksNamespace.prototype.init = function (io, config, RequestLimitation) {
-    var that = this
+    const _self = this
     let linksNamespace = io.of(config.ionamespaces.links.name)
     linksNamespace.use(function (socket, next) {
         if (clientCounter < config.server.maximumClients) {
@@ -44,10 +44,10 @@ LinksNamespace.prototype.init = function (io, config, RequestLimitation) {
                     throw 'max-request'
                 }
 
-                that.checkIfValidParameter(query)
-                var url = that.createUrl(query)
+                _self.checkIfValidParameter(query)
+                var url = _self.createUrl(query)
                 limitation.newRequest()
-                let requester = that.createRequester(config)
+                let requester = _self.createRequester(config)
                 htmlService = new HtmlService(socket, requester)
                 htmlService.deadLinksRequest(url, _ => {
                     limitation.requestFinished()
@@ -59,13 +59,19 @@ LinksNamespace.prototype.init = function (io, config, RequestLimitation) {
             }
         })
         socket.on('disconnect', () => {
-            htmlService.cancel()
-            htmlService = null
+            _self.cancelIfRequestStillActive(htmlService)
             limitation = null
             clientCounter--
             console.log('client ' + socket.id + ' disconnected')
         })
     })
+}
+
+LinksNamespace.prototype.cancelIfRequestStillActive = function (htmlService) {
+    if(htmlService !== null) {
+        htmlService.cancel()
+        htmlService = null
+    }
 }
 
 LinksNamespace.prototype.createRequester = function (config) {
