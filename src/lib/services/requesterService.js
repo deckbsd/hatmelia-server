@@ -42,6 +42,7 @@ RequesterService.prototype.get = async function (url) {
         const response = await _self.req.get(_self.buildRequest(url.url))
         if (response.statusCode === 200 && (response.headers['content-type'].includes('text/html') || response.headers['content-type'].includes('application/xhtml+xml'))) {
             html = response.body
+            url.url = response.request.uri
         }
 
         return { html: html, status: status, error: null, failed: failed, url: url }
