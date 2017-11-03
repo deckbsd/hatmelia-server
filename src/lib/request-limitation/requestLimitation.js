@@ -1,23 +1,23 @@
 'use strict'
-function RequestLimitation(limit){
-    var that = this;
-    that.limit = limit;
-    that.requestsRunning = 0;
-};
+function RequestLimitation(limit) {
+    var that = this
+    that.limit = limit
+    that.requestsRunning = 0
+}
 
-RequestLimitation.prototype.requestAllowed = function(){
-    var that = this;
-    return that.requestsRunning < that.limit;
-};
+RequestLimitation.prototype.requestAllowed = function () {
+    var that = this
+    return that.requestsRunning < that.limit
+}
 
-RequestLimitation.prototype.newRequest = function(){
-    var that = this;
-    that.requestsRunning++;
-};
+RequestLimitation.prototype.newRequest = function () {
+    var that = this
+    that.requestsRunning++
+}
 
-RequestLimitation.prototype.requestFinished = function(){
-    var that = this;
-    that.requestsRunning--;
-};
+RequestLimitation.prototype.requestFinished = function () {
+    var that = this
+    that.requestsRunning--
+}
 
-module.exports = RequestLimitation;
+module.exports = RequestLimitation
