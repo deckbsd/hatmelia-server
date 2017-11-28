@@ -1,4 +1,10 @@
+#
+# --build-arg port=port_number
+#
 FROM node:carbon
+
+ARG port=3000
+ENV PORT=$port
 
 WORKDIR /hatmelia/server
 
@@ -10,5 +16,5 @@ RUN npm install --only=production
 # Bundle app source
 COPY . .
 
-EXPOSE 3000
+# start the server
 CMD [ "npm", "start" ]
