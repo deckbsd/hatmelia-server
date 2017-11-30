@@ -5,7 +5,7 @@ const server = require('http').createServer()
 const io = require('socket.io')(server)
 const port = process.env.PORT || config.server.port
 const clientCounter = 0
-io.origins(config.cors)
+io.origins(config.server.cors)
 
 ioNamespaces.init(io)
 

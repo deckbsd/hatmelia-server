@@ -68,15 +68,18 @@ LinksNamespace.prototype.init = function (io, config, RequestLimitation) {
 }
 
 LinksNamespace.prototype.cancelIfRequestStillActive = function (htmlService) {
-    if(htmlService !== null) {
+    if (htmlService !== null) {
         htmlService.cancel()
         htmlService = null
     }
 }
 
 LinksNamespace.prototype.createRequester = function (config) {
-    if (config.proxy) {
-        return new ProxiedRequesterService(config.proxy_addr)
+    const proxy = process.env.https_proxy || process.env.http_proxy || config.server.proxy_addr
+    console.log('PROXY : ' + proxy)
+    if (proxy !== undefined && proxy !== null) {
+        console.log('proxy<<<<<<<<<<<<<<<<<')
+        return new ProxiedRequesterService(proxy)
     }
 
     return new RequesterService()
