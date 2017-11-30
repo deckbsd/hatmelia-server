@@ -76,9 +76,7 @@ LinksNamespace.prototype.cancelIfRequestStillActive = function (htmlService) {
 
 LinksNamespace.prototype.createRequester = function (config) {
     const proxy = process.env.https_proxy || process.env.http_proxy || config.server.proxy_addr
-    console.log('PROXY : ' + proxy)
     if (proxy !== undefined && proxy !== null) {
-        console.log('proxy<<<<<<<<<<<<<<<<<')
         return new ProxiedRequesterService(proxy)
     }
 
