@@ -73,7 +73,12 @@ HtmlService.prototype.pushLinks = function (result) {
         if (result.html !== null && _self.isSameDomain(_self.rootUrl.host, result.url.url.host)) {
             let $ = cheerio.load(result.html)
             $('a').each(function () {
-                _self.buildLink(result.url.url, this.attribs.href)
+                let to = _self.buildLink(result.url.url, this.attribs.href)
+                if (!to) {
+                    return
+                }
+                
+                _self.CheckIfLinkToProceedOrNot(result.url.url, to)
             })
         }
     }
@@ -112,6 +117,11 @@ HtmlService.prototype.buildLink = function (from, path) {
         to = URL.parse(URL.resolve(from.href, path))
     }
 
+    return to
+}
+
+HtmlService.prototype.CheckIfLinkToProceedOrNot = function (from, to) {
+    const _self = this
     if (_self.processedUrls.key(to.href) !== null)
         return
 
