@@ -137,6 +137,24 @@ describe('Html', function() {
     });
   });
 
+  describe('#buildLinkWithLonRelativPath', function() {
+    it('should a correct html link', function() {
+      let from = { href: 'http://dckapps.azurewebsites.net/1/2/3/4/'}
+      let path = '../../../path'
+      let link = htmlService.buildLink(from, path).href
+      assert.ok(link === 'http://dckapps.azurewebsites.net/1/path');
+    });
+  });
+
+  describe('#buildLinkWithLonRelativPath', function() {
+    it('should a correct html link', function() {
+      let from = { href: 'http://dckapps.azurewebsites.net/1/2/3/4/'}
+      let path = '../../../../../../../../../path'
+      let link = htmlService.buildLink(from, path).href
+      assert.ok(link === 'http://dckapps.azurewebsites.net/path');
+    });
+  });
+
   describe('#buildLinkFromLoopLink', function() {
     it('should return nothing', function() {
       let from = { href: 'http://dckapps.azurewebsites.net/'}
