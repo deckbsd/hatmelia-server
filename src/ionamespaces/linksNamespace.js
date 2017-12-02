@@ -55,7 +55,7 @@ LinksNamespace.prototype.init = function (io, config, RequestLimitation) {
                     htmlService = null
                 })
             } catch (err) {
-                socket.emit('server-error', err)
+                socket.emit('serverError', err)
             }
         })
         socket.on('disconnect', () => {

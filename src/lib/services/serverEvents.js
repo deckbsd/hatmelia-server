@@ -2,7 +2,7 @@
 const REQUEST_FINISHED = 'requestFinished'
 const LINK_CHECKED = 'linkChecked'
 const DEAD_LINK_DETECTED = 'deadlinkDetected'
-const SERVER_ERROR = 'server-error'
+const SERVER_ERROR = 'serverError'
 
 module.exports = {
     REQUEST_FINISHED: REQUEST_FINISHED,
