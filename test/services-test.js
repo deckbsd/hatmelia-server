@@ -101,4 +101,112 @@ describe('Html', function() {
     });
   });
 
+  describe('#buildLinkWithSlash', function() {
+    it('should a correct html link', function() {
+      let from = { href: 'http://dckapps.azurewebsites.net'}
+      let path = '/path'
+      let link = htmlService.buildLink(from, path).href
+      assert.ok(link === 'http://dckapps.azurewebsites.net/path');
+    });
+  });
+
+  describe('#buildLinkWithoutSlash', function() {
+    it('should a correct html link', function() {
+      let from = { href: 'http://dckapps.azurewebsites.net'}
+      let path = 'path'
+      let link = htmlService.buildLink(from, path).href
+      assert.ok(link === 'http://dckapps.azurewebsites.net/path');
+    });
+  });
+
+  describe('#buildLinkWithDot', function() {
+    it('should a correct html link', function() {
+      let from = { href: 'http://dckapps.azurewebsites.net'}
+      let path = './path'
+      let link = htmlService.buildLink(from, path).href
+      assert.ok(link === 'http://dckapps.azurewebsites.net/path');
+    });
+  });
+
+  describe('#buildLinkWithTwoDots', function() {
+    it('should a correct html link', function() {
+      let from = { href: 'http://dckapps.azurewebsites.net/1'}
+      let path = '../path'
+      let link = htmlService.buildLink(from, path).href
+      assert.ok(link === 'http://dckapps.azurewebsites.net/path');
+    });
+  });
+
+  describe('#buildLinkFromLoopLink', function() {
+    it('should return nothing', function() {
+      let from = { href: 'http://dckapps.azurewebsites.net/'}
+      let path = '#loop'
+      let link = htmlService.buildLink(from, path)
+      assert.ok(link === undefined);
+    });
+  });
+
+  describe('#buildLinkWithSlashOnly', function() {
+    it('should return nothing', function() {
+      let from = { href: 'http://dckapps.azurewebsites.net/'}
+      let path = '/'
+      let link = htmlService.buildLink(from, path)
+      assert.ok(link === undefined);
+    });
+  });
+
+  describe('#buildLinkFromUndefined', function() {
+    it('should return nothing', function() {
+      let from = { href: 'http://dckapps.azurewebsites.net/'}
+      let path = undefined
+      let link = htmlService.buildLink(from, path)
+      assert.ok(link === undefined);
+    });
+  });
+
+  describe('#buildLinkFromEmpty', function() {
+    it('should return nothing', function() {
+      let from = { href: 'http://dckapps.azurewebsites.net/'}
+      let path = ''
+      let link = htmlService.buildLink(from, path)
+      assert.ok(link === undefined);
+    });
+  });
+
+  describe('#buildLinkFromNull', function() {
+    it('should return nothing', function() {
+      let from = { href: 'http://dckapps.azurewebsites.net/'}
+      let path = null
+      let link = htmlService.buildLink(from, path)
+      assert.ok(link === undefined);
+    });
+  });
+
+  describe('#buildAddressFromWWW', function() {
+    it('should a correct address', function() {
+      let from = { href: 'http://dckapps.azurewebsites.net'}
+      let path = 'www.hatmelia.com'
+      let link = htmlService.buildLink(from, path).href
+      assert.ok(link === 'www.hatmelia.com');
+    });
+  });
+
+  describe('#buildAddressFromDoubleSlashes', function() {
+    it('should a correct address', function() {
+      let from = { href: 'http://dckapps.azurewebsites.net'}
+      let path = '//www.hatmelia.com'
+      let link = htmlService.buildLink(from, path).href
+      assert.ok(link === 'http://www.hatmelia.com/');
+    });
+  });
+
+  describe('#buildFromHttp', function() {
+    it('should a correct address', function() {
+      let from = { href: 'http://dckapps.azurewebsites.net'}
+      let path = '//http://www.hatmelia.com'
+      let link = htmlService.buildLink(from, path).href
+      assert.ok(link === 'http://www.hatmelia.com/');
+    });
+  });
+
 });

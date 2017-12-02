@@ -59,7 +59,6 @@ RequesterService.prototype.getValidUrl = async function (url) {
     try {
         const response = await _self.req.get(_self.buildRequest(url))
         if (response.statusCode == 200) {
-            console.log(response)
             validUrl = response.request.uri
         }
 
