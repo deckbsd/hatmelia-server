@@ -51,9 +51,10 @@ HtmlService.prototype.deadLinksRequest = async function (url, onFinished) {
 HtmlService.prototype.start = function (validUrl) {
     const _self = this
     if (!validUrl) {
-        _self.socket.emit(serverEvents.SERVER_ERROR, 'website-not-found')
+        _self.socket.emit(serverEvents.SERVER_ERROR, 'Website not found')
         _self.emit(serverEvents.REQUEST_FINISHED)
     } else {
+        _self.socket.emit(serverEvents.REQUEST_STARTED)
         _self.rootUrl = validUrl
         _self.processedUrls.insertOne(validUrl.href)
         StopWatch.startNew()

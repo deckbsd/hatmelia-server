@@ -1,3 +1,4 @@
+'use strict'
 function StopWatch(socket, requesterService) {
     const _self = this
     _self.startTime = 0

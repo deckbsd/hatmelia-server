@@ -8,14 +8,14 @@ let clientCounter = 0
 function LinksNamespace() {
     this.checkIfValidParameter = function (query) {
         if (!query || typeof (query) != 'string') {
-            throw 'invalid-parameter'
+            throw 'Invalid parameter'
         }
     }.bind(this)
 
     this.createUrl = function (url) {
         let validUrl = URL.parse(url)
         if (validUrl.protocol !== 'http:' && validUrl.protocol !== 'https:') {
-            throw 'protocol-not-supported'
+            throw 'Protocol not supported'
         }
 
         return validUrl
@@ -41,7 +41,7 @@ LinksNamespace.prototype.init = function (io, config, RequestLimitation) {
         socket.on('check-for-dead', (query) => {
             try {
                 if (limitation.requestAllowed() === false) {
-                    throw 'max-request'
+                    throw 'Maximum request reached'
                 }
 
                 _self.checkIfValidParameter(query)
