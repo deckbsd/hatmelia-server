@@ -49,7 +49,7 @@ RequesterService.prototype.get = async function (url) {
     }
     catch (error) {
         failed = true
-        return { html: html, status: error.statusCode, error: error.cause, failed: failed, url: url }
+        return { html: html, status: error.statusCode, error: error.message, failed: failed, url: url }
     }
 }
 
