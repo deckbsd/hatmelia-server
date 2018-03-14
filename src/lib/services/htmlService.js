@@ -99,7 +99,6 @@ HtmlService.prototype.sendDeadLinkFounded = function (from, dead, reason) {
 
 HtmlService.prototype.addDeadLinkToList = function (dead, reason) {
     const _self= this
-    console.log('add : ' + dead)
     _self.deadLinkFound.insertOne([dead, reason])
 }
 /* TO READ !
