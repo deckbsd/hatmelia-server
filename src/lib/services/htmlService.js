@@ -17,6 +17,7 @@ function HtmlService(socket, requesterService) {
     _self.urlsToProcess = async.queue(_self.processUrl.bind(this), config.html_service.concurrency)
     _self.urlsToProcess.drain = _self.requestFinished.bind(this)
     _self.processedUrls = SortedList.create({ compare: "string" })
+    _self.deadLinkFound = SortedList.create({ compare: function(a,b) { return (a[0] > b[0]) ? 1 : (a[0] == b[0]) ? 0 : -1} })
     _self.rootUrl = null
     _self.checkedLinksTotal = 0
 }
@@ -78,16 +79,46 @@ HtmlService.prototype.pushLinks = function (result) {
                 if (!to) {
                     return
                 }
-                
+
                 _self.CheckIfLinkToProceedOrNot(result.url.url, to)
             })
         }
     }
     else {
         const reason = result.status !== undefined ? result.status : result.error
-        _self.socket.emit(serverEvents.DEAD_LINK_DETECTED, { from: result.url.from.href, url: result.url.url.href, reason: reason })
-        console.log("from : " + result.url.from.href + " url : " + result.url.url.href + " reason : " + reason)
+        _self.sendDeadLinkFounded(result.url.from.href, result.url.url.href, reason)
+        _self.addDeadLinkToList(result.url.url.href, reason)
     }
+}
+
+HtmlService.prototype.sendDeadLinkFounded = function (from, dead, reason) {
+    const _self = this
+    _self.socket.emit(serverEvents.DEAD_LINK_DETECTED, { from: from, url: dead, reason: reason })
+    console.log("from : " + from + " url : " + dead + " reason : " + reason)
+}
+
+HtmlService.prototype.addDeadLinkToList = function (dead, reason) {
+    const _self= this
+    console.log('add : ' + dead)
+    _self.deadLinkFound.insertOne([dead, reason])
+}
+/* TO READ !
+ * Re-send the dead url if the link is present in other pages that
+ * the first one where the program found it. BUT, if the dead url are
+ * into a lot of pages, due to the async process, during the very short time (less than one second)
+ * between the add to processedUrls and the call to addDeadLinkToList some
+ * of the dead url's occurences can be missed. The only way to be sure to have
+ * all the dead url occurences in one time, is to do the get request. But it's not
+ * optimum and some of websites can ban your ip or take some other actions against you.
+ */
+
+HtmlService.prototype.isOtherDeadOccurence = function (from, dead) {
+    const _self = this
+    const index = _self.deadLinkFound.key([dead.href])
+    if (index === null)
+        return
+
+    _self.sendDeadLinkFounded(from.href, dead.href, _self.deadLinkFound[index][1])
 }
 
 HtmlService.prototype.cancel = function () {
@@ -123,8 +154,10 @@ HtmlService.prototype.buildLink = function (from, path) {
 
 HtmlService.prototype.CheckIfLinkToProceedOrNot = function (from, to) {
     const _self = this
-    if (_self.processedUrls.key(to.href) !== null)
+    if (_self.processedUrls.key(to.href) !== null) {
+        _self.isOtherDeadOccurence(from, to)
         return
+    }     
 
     _self.processedUrls.insertOne(to.href)
     _self.urlsToProcess.push({ from: from, url: to })
