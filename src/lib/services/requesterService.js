@@ -18,8 +18,9 @@ function RequesterService() {
         return {
             url: url.href,
             headers: {
-                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0 WOW64 rv:51.0) Gecko/20100101 Firefox/51.0',
-                'Accept-Encoding': this.selectAcceptEncodingHeader(url.protocol)
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0 WOW64 rv:51.0) Gecko/20100101 Firefox/59.0',
+                'Accept-Encoding': this.selectAcceptEncodingHeader(url.protocol),
+                'Connection': 'keep-alive'
             },
             gzip: true,
             deflate: true,
