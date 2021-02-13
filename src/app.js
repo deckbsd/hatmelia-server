@@ -2,10 +2,16 @@
 const config = require('./config.json')
 const ioNamespaces = require('./ionamespaces')
 const server = require('http').createServer()
-const io = require('socket.io')(server)
+const io = require('socket.io')(server, {
+    cors: {
+        origin: config.server.cors,
+        methods: ["GET", "POST"],
+        transports: ['websocket', 'polling'],
+        credentials: true
+    },
+    allowEIO3: true
+})
 const port = process.env.PORT || config.server.port
-
-io.origins(config.server.cors)
 
 ioNamespaces.init(io)
 
