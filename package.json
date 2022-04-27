@@ -9,7 +9,7 @@
   },
   "dependencies": {
     "assert-plus": "^1.0.0",
-    "async": "^2.5.0",
+    "async": "^2.6.4",
     "aws4": "^1.6.0",
     "caseless": "^0.12.0",
     "cheerio": "^1.0.0-rc.5",
