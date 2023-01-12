@@ -28,7 +28,7 @@
     "uws": "^8.14.1"
   },
   "devDependencies": {
-    "mocha": "^3.4.2",
+    "mocha": "^10.2.0",
     "should": "^11.2.1"
   },
   "keywords": [],
